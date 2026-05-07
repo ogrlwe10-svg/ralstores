@@ -603,14 +603,6 @@
                             shape: 'rect',
                             label: 'paypal'
                         },
-                        onClick: (data, actions) => {
-                            const email = checkoutEmailRef.current;
-                            if (!email || !email.includes('@')) {
-                                alert('Veuillez entrer une adresse email valide avant de payer.');
-                                return actions.reject();
-                            }
-                            return actions.resolve();
-                        },
                         // ✅ SÉCURISÉ : la commande est créée côté serveur (prix validés serveur)
                         createOrder: async () => {
                             const cartItems = cart.map(item => ({ id: item.id, quantity: item.quantity }));
@@ -1200,18 +1192,12 @@
                                 </div>
                                 {isPaypalConfigured ? (
                                     <>
-                                        {!emailError && checkoutEmail ? (
-                                            <>
-                                                <div className="paypal-button-mount" ref={paypalButtonRef}></div>
-                                                {paypalError && <p className="payment-error"><strong>Erreur paiement :</strong> {paypalError}</p>}
-                                                <p className="payment-info">
-                                                    <Shield size={14} />
-                                                    Paiement sécurisé par PayPal.
-                                                </p>
-                                            </>
-                                        ) : (
-                                            <p className="payment-warning">Veuillez entrer une adresse email valide pour continuer.</p>
-                                        )}
+                                        <div className="paypal-button-mount" ref={paypalButtonRef}></div>
+                                        {paypalError && <p className="payment-error"><strong>Erreur paiement :</strong> {paypalError}</p>}
+                                        <p className="payment-info">
+                                            <Shield size={14} />
+                                            Paiement sécurisé par PayPal.
+                                        </p>
                                     </>
                                 ) : (
                                     <div className="paypal-config-warning">
