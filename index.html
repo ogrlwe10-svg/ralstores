@@ -71,7 +71,7 @@
 const SITE_CONFIG = {
     name: 'RΔL',
     tagline: 'Boutique premium',
-    paypalMeLink: 'paypal.me/RALStore',
+    paypalMeLink: 'https://paypal.me/RALStore',  // ✅
     discordMessage: 'Veuillez rejoindre le Discord : https://discord.gg/tddReue2t et ouvrir un ticket avec le detail de votre commande afin de recevoir votre produit.'
 };
 
@@ -582,7 +582,13 @@ const SITE_CONFIG = {
                     return;
                 }
 
-                window.open(paypalUrl, '_blank', 'noopener,noreferrer');
+                const a = document.createElement('a');
+                a.href = paypalUrl;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
                 setOrderConfirmed(true);
                 setCurrentPage('confirmation');
                 trackEvent('paypalme_redirect', {
