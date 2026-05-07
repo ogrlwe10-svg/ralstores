@@ -41,7 +41,7 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+        const { useState, useEffect } = React;
 
         const Icon = ({ symbol, className }) => (
             <span className={className} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -68,9 +68,10 @@
         // ============================================================================
         // CONFIGURATION
         // ============================================================================
-        const SITE_CONFIG = {
+const SITE_CONFIG = {
     name: 'RΔL',
     tagline: 'Boutique premium',
+    paypalMeLink: 'paypal.me/RALStore',
     discordMessage: 'Veuillez rejoindre le Discord : https://discord.gg/tddReue2t et ouvrir un ticket avec le detail de votre commande afin de recevoir votre produit.'
 };
 
@@ -80,374 +81,374 @@
         // Exemple : imageUrl: 'https://ton-site.com/image.png'
         // ============================================================================
         const PRODUCTS = [
-    {
-        id: 1,
-        name: 'Disney+',
-        category: 'streaming',
-        price: 2,
-        imageUrl: 'https://i.ibb.co/0Hx6Fbf/Untitled-Project-3.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'Accès illimité à tout le catalogue Disney+',
-        features: ['Films & Séries Disney', 'Marvel & Star Wars', 'Pixar & National Geographic'],
-        popular: false
-    },
-    {
-        id: 2,
-        name: 'Paramount+',
-        category: 'streaming',
-        price: 2,
-        imageUrl: 'https://i.ibb.co/7xR4Nb49/Untitled-Project-4.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'Paramount+ avec tous les contenus exclusifs',
-        features: ['Films Paramount', 'Séries exclusives', 'Sports & Actualités'],
-        popular: false
-    },
-    {
-        id: 3,
-        name: 'Netflix Lifetime',
-        category: 'streaming',
-        price: 2,
-        imageUrl: 'https://i.ibb.co/S4nZ6dbg/Untitled-Project-1.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'Netflix Premium à vie',
-        features: ['4K Ultra HD', '4 écrans simultanés', 'Téléchargements illimités'],
-        popular: true
-    },
-    {
-        id: 4,
-        name: 'Prime Video Lifetime',
-        category: 'streaming',
-        price: 2,
-        imageUrl: 'https://i.ibb.co/jk8kQzwD/Untitled-Project-5.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'Amazon Prime Video accès permanent',
-        features: ['Contenu Prime Original', 'Films & Séries', 'Streaming 4K'],
-        popular: false
-    },
-    {
-        id: 5,
-        name: 'HBO Max Lifetime',
-        category: 'streaming',
-        price: 2,
-        imageUrl: 'https://i.ibb.co/LzLBJQL2/Untitled-Project-9.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'HBO Max avec contenu premium',
-        features: ['Séries HBO', 'Warner Bros Films', 'Max Originals'],
-        popular: false
-    },
-    {
-        id: 6,
-        name: 'UFC Lifetime',
-        category: 'streaming',
-        price: 2,
-        imageUrl: 'https://i.ibb.co/9kpm4pKK/Untitled-Project-8.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'Tous les combats UFC en direct',
-        features: ['PPV Events', 'Fight Nights', 'Archives complètes'],
-        popular: false
-    },
-    {
-        id: 7,
-        name: 'DAZN Lifetime',
-        category: 'streaming',
-        price: 2,
-        imageUrl: 'https://i.ibb.co/KpN0MFBL/Untitled-Project-7.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'Sports en streaming avec DAZN',
-        features: ['Football en direct', 'Boxe & MMA', 'Sports multiples'],
-        popular: false
-    },
-    {
-        id: 8,
-        name: 'AMC+ Lifetime',
-        category: 'streaming',
-        price: 2,
-        imageUrl: 'https://i.ibb.co/Jjn8HdgB/Untitled-Project-6.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'AMC+ avec séries cultes',
-        features: ['Walking Dead Universe', 'Séries AMC', 'Films exclusifs'],
-        popular: false
-    },
-    {
-        id: 9,
-        name: 'OnePlay Lifetime',
-        category: 'streaming',
-        price: 2,
-        imageUrl: 'https://i.ibb.co/DHWj66nV/Untitled-Project-10.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'OnePlay streaming platform',
-        features: ['Contenu varié', 'Multi-appareils', 'HD Streaming'],
-        popular: false
-    },
-    {
-        id: 10,
-        name: 'Spotify Lifetime',
-        category: 'music',
-        price: 4,
-        imageUrl: 'https://i.ibb.co/27tWhxmw/Untitled-Project-11.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'Spotify Premium sans publicité',
-        features: ['Écoute illimitée', 'Sans publicité', 'Téléchargements offline'],
-        popular: true
-    },
-    {
-        id: 11,
-        name: 'Spotify Key Lifetime',
-        category: 'music',
-        price: 6,
-        imageUrl: 'https://i.ibb.co/Dg9RCfqw/Untitled-Project-12.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'Clé d\'activation Spotify Premium',
-        features: ['Activation rapide', 'Premium à vie', 'Support inclus'],
-        popular: false
-    },
-    {
-        id: 12,
-        name: 'Crunchyroll MEGA FAN Lifetime',
-        category: 'streaming',
-        price: 3,
-        imageUrl: 'https://i.ibb.co/zVcys1wM/Untitled-Project-13.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'Crunchyroll MEGA FAN permanent',
-        features: ['Tous les animes', 'Sans publicité', 'Streaming HD'],
-        popular: true
-    },
-    {
-        id: 13,
-        name: 'Duolingo Lifetime',
-        category: 'education',
-        price: 1.50,
-        imageUrl: 'https://i.ibb.co/Rk2JrBKV/Untitled-Project-14.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'Duolingo Plus pour apprendre les langues',
-        features: ['Sans publicité', 'Vies illimitées', 'Apprentissage offline'],
-        popular: false
-    },
-    {
-        id: 14,
-        name: 'NBA Lifetime',
-        category: 'streaming',
-        price: 1.50,
-        imageUrl: 'https://i.ibb.co/39m9G2Bw/Untitled-Project-15.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'NBA League Pass complet',
-        features: ['Tous les matchs', 'Replay complet', 'Multi-angles'],
-        popular: false
-    },
-    {
-        id: 15,
-        name: 'TikTok Followers',
-        category: 'social',
-        price: 5,
-        imageUrl: 'https://i.ibb.co/Fb84nXqm/Untitled-Project-17.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'Boost de followers TikTok',
-        features: ['Followers réels', 'Livraison rapide', 'Sécurisé'],
-        popular: false,
-        variants: [
-            { label: '1K Followers', price: 5 },
-            { label: '10K Followers', price: 21 },
-            { label: '20K Followers', price: 35 }
-        ],
-        variantIds: [15,16,17]
-    },
-    {
-        id: 18,
-        name: 'Instagram Followers',
-        category: 'social',
-        price: 5,
-        imageUrl: 'https://i.ibb.co/27HQTsqP/Untitled-Project-22-1.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'Boost de followers Instagram',
-        features: ['Followers actifs', 'Profil optimisé', 'Livraison immédiate'],
-        popular: false,
-        variants: [
-            { label: '1K Followers', price: 5 },
-            { label: '5K Followers', price: 12 }
-        ],
-        variantIds: [18,19]
-    },
-    {
-        id: 20,
-        name: 'YouTube Lifetime',
-        category: 'streaming',
-        price: 2.50,
-        imageUrl: 'https://i.ibb.co/7xyDr0qZ/Untitled-Project-23.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'YouTube Premium sans publicité',
-        features: ['Sans publicité', 'YouTube Music', 'Téléchargements'],
-        popular: false
-    },
-    {
-        id: 21,
-        name: 'Twitch Followers',
-        category: 'social',
-        price: 1,
-        imageUrl: 'https://i.ibb.co/Pvs8dvW9/Untitled-Project-24.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'Boost de followers Twitch',
-        features: ['Followers réels', 'Support streaming'],
-        popular: false,
-        variants: [
-            { label: '100 Followers', price: 1 },
-            { label: '500 Followers', price: 2.50 },
-            { label: '2000 Followers', price: 5 },
-            { label: '5000 Followers', price: 8.75 },
-            { label: '10000 Followers', price: 15 }
-        ],
-        variantIds: [21,22,23,24,25]
-    },
-    {
-        id: 26,
-        name: 'ChatGPT Accounts',
-        category: 'ai',
-        price: 3.50,
-        imageUrl: 'https://i.ibb.co/v4kGxK4B/Untitled-Project-25.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'Compte ChatGPT Plus',
-        features: ['GPT-4 accès', 'Priorité serveur', 'Fonctionnalités avancées'],
-        popular: true
-    },
-    {
-        id: 27,
-        name: 'Gemini Pro Accounts',
-        category: 'ai',
-        price: 2.50,
-        imageUrl: 'https://i.ibb.co/0yM3bQd2/Untitled-Project-26.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'Compte Google Gemini Pro',
-        features: ['Gemini Advanced', 'IA puissante', 'Intégration Google'],
-        popular: false
-    },
-    {
-        id: 28,
-        name: 'Movistar+ Lifetime',
-        category: 'streaming',
-        price: 2.50,
-        imageUrl: 'https://i.ibb.co/4npmBLqg/Untitled-Project-27.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'Movistar+ accès complet',
-        features: ['Chaînes premium', 'Sports & Films', 'Séries exclusives'],
-        popular: false
-    },
-    {
-        id: 29,
-        name: 'CapCut Pro Lifetime',
-        category: 'creative',
-        price: 2,
-        imageUrl: 'https://i.ibb.co/SXfLVn5Q/Untitled-Project-28.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'CapCut Pro pour montage vidéo',
-        features: ['Effets premium', 'Sans watermark', 'Outils avancés'],
-        popular: false
-    },
-    {
-        id: 30,
-        name: 'Filmora Lifetime',
-        category: 'creative',
-        price: 1.85,
-        imageUrl: 'https://i.ibb.co/Kcyj8KRb/Untitled-Project-29.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'Suite Wondershare complète',
-        features: ['Filmora & PDFelement', 'Outils créatifs', 'Licence permanente'],
-        popular: false
-    },
-    {
-        id: 31,
-        name: 'NordVPN Lifetime',
-        category: 'vpn',
-        price: 3,
-        imageUrl: 'https://i.ibb.co/B2kG1PtZ/Untitled-Project-30.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'NordVPN protection complète',
-        features: ['Serveurs mondiaux', 'Sécurité maximale', 'Streaming optimisé'],
-        popular: true
-    },
-    {
-        id: 32,
-        name: 'HotSpot Shield VPN 1 Year',
-        category: 'vpn',
-        price: 4.50,
-        imageUrl: 'https://i.ibb.co/7JCDHYBn/image-2026-05-06-170859921.png',
-        inStock: true,
-        stock: 150,
-        description: '🏷️ ⚡ Ultra Fast · 📱 Unlimited Devices · 🔒 Private & Secure',
-        features: ['7000+ serveurs', 'Sans logs'],
-        popular: false
-    },
-    {
-        id: 33,
-        name: 'TunnelBear',
-        category: 'vpn',
-        price: 2.80,
-        imageUrl: 'https://i.ibb.co/Q71Qb4fL/image-2026-05-06-170007716.png',
-        inStock: true,
-        stock: 150,
-        description: 'TunnelBear VPN simple et efficace',
-        features: ['Interface intuitive', 'Sécurité forte', 'Multi-plateformes'],
-        popular: false
-    },
-    {
-        id: 34,
-        name: 'IPVanish 1 Year',
-        category: 'vpn',
-        price: 2.50,
-        imageUrl: 'https://i.ibb.co/nsy5vsNv/Untitled-Project-34.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'IPVanish VPN haute performance',
-        features: ['Connexions illimitées', 'Vitesse maximale', '1 an d\'accès'],
-        popular: false
-    },
-    {
-        id: 35,
-        name: 'PureVPN',
-        category: 'vpn',
-        price: 3.90,
-        imageUrl: 'https://i.ibb.co/rRzV1tFH/image-2026-05-06-170103269.png',
-        inStock: true,
-        stock: 150,
-        description: 'PureVPN protection globale',
-        features: ['6500+ serveurs', '78 pays', 'Sécurité premium'],
-        popular: false
-    },
-    {
-        id: 36,
-        name: 'Mullvad Lifetime',
-        category: 'vpn',
-        price: 8.50,
-        imageUrl: 'https://i.ibb.co/FkHzgBxy/Untitled-Project-32.jpg',
-        inStock: true,
-        stock: 150,
-        description: 'Mullvad VPN ultra-sécurisé et non logs',
-        features: ['Anonymat total', 'Open source', 'Privacy-first'],
-        popular: true
-    }
-];
+            {
+                id: 1,
+                name: 'Disney+',
+                category: 'streaming',
+                price: 3,
+                imageUrl: 'https://i.ibb.co/0Hx6Fbf/Untitled-Project-3.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'Accès illimité à tout le catalogue Disney+',
+                features: ['Films & Séries Disney', 'Marvel & Star Wars', 'Pixar & National Geographic'],
+                popular: false
+            },
+            {
+                id: 2,
+                name: 'Paramount+',
+                category: 'streaming',
+                price: 2,
+                imageUrl: 'https://i.ibb.co/7xR4Nb49/Untitled-Project-4.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'Paramount+ avec tous les contenus exclusifs',
+                features: ['Films Paramount', 'Séries exclusives', 'Sports & Actualités'],
+                popular: false
+            },
+            {
+                id: 3,
+                name: 'Netflix Lifetime',
+                category: 'streaming',
+                price: 3,
+                imageUrl: 'https://i.ibb.co/S4nZ6dbg/Untitled-Project-1.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'Netflix Premium à vie',
+                features: ['4K Ultra HD', '4 écrans simultanés', 'Téléchargements illimités'],
+                popular: true
+            },
+            {
+                id: 4,
+                name: 'Prime Video Lifetime',
+                category: 'streaming',
+                price: 2,
+                imageUrl: 'https://i.ibb.co/jk8kQzwD/Untitled-Project-5.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'Amazon Prime Video accès permanent',
+                features: ['Contenu Prime Original', 'Films & Séries', 'Streaming 4K'],
+                popular: false
+            },
+            {
+                id: 5,
+                name: 'HBO Max Lifetime',
+                category: 'streaming',
+                price: 2,
+                imageUrl: 'https://i.ibb.co/LzLBJQL2/Untitled-Project-9.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'HBO Max avec contenu premium',
+                features: ['Séries HBO', 'Warner Bros Films', 'Max Originals'],
+                popular: false
+            },
+            {
+                id: 6,
+                name: 'UFC Lifetime',
+                category: 'streaming',
+                price: 2,
+                imageUrl: 'https://i.ibb.co/9kpm4pKK/Untitled-Project-8.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'Tous les combats UFC en direct',
+                features: ['PPV Events', 'Fight Nights', 'Archives complètes'],
+                popular: false
+            },
+            {
+                id: 7,
+                name: 'DAZN Lifetime',
+                category: 'streaming',
+                price: 2,
+                imageUrl: 'https://i.ibb.co/KpN0MFBL/Untitled-Project-7.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'Sports en streaming avec DAZN',
+                features: ['Football en direct', 'Boxe & MMA', 'Sports multiples'],
+                popular: false
+            },
+            {
+                id: 8,
+                name: 'AMC+ Lifetime',
+                category: 'streaming',
+                price: 2,
+                imageUrl: 'https://i.ibb.co/Jjn8HdgB/Untitled-Project-6.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'AMC+ avec séries cultes',
+                features: ['Walking Dead Universe', 'Séries AMC', 'Films exclusifs'],
+                popular: false
+            },
+            {
+                id: 9,
+                name: 'OnePlay Lifetime',
+                category: 'streaming',
+                price: 2,
+                imageUrl: 'https://i.ibb.co/DHWj66nV/Untitled-Project-10.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'OnePlay streaming platform',
+                features: ['Contenu varié', 'Multi-appareils', 'HD Streaming'],
+                popular: false
+            },
+            {
+                id: 10,
+                name: 'Spotify Lifetime',
+                category: 'music',
+                price: 6,
+                imageUrl: 'https://i.ibb.co/27tWhxmw/Untitled-Project-11.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'Spotify Premium sans publicité',
+                features: ['Écoute illimitée', 'Sans publicité', 'Téléchargements offline'],
+                popular: true
+            },
+            {
+                id: 11,
+                name: 'Spotify Key Lifetime',
+                category: 'music',
+                price: 6,
+                imageUrl: 'https://i.ibb.co/Dg9RCfqw/Untitled-Project-12.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'Clé d\'activation Spotify Premium',
+                features: ['Activation rapide', 'Premium à vie', 'Support inclus'],
+                popular: false
+            },
+            {
+                id: 12,
+                name: 'Crunchyroll MEGA FAN Lifetime',
+                category: 'streaming',
+                price: 5,
+                imageUrl: 'https://i.ibb.co/zVcys1wM/Untitled-Project-13.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'Crunchyroll MEGA FAN permanent',
+                features: ['Tous les animes', 'Sans publicité', 'Streaming HD'],
+                popular: true
+            },
+            {
+                id: 13,
+                name: 'Duolingo Lifetime',
+                category: 'education',
+                price: 4,
+                imageUrl: 'https://i.ibb.co/Rk2JrBKV/Untitled-Project-14.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'Duolingo Plus pour apprendre les langues',
+                features: ['Sans publicité', 'Vies illimitées', 'Apprentissage offline'],
+                popular: false
+            },
+            {
+                id: 14,
+                name: 'NBA Lifetime',
+                category: 'streaming',
+                price: 4,
+                imageUrl: 'https://i.ibb.co/39m9G2Bw/Untitled-Project-15.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'NBA League Pass complet',
+                features: ['Tous les matchs', 'Replay complet', 'Multi-angles'],
+                popular: false
+            },
+            {
+                id: 15,
+                name: 'TikTok Followers',
+                category: 'social',
+                price: 6,
+                imageUrl: 'https://i.ibb.co/Fb84nXqm/Untitled-Project-17.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'Boost de followers TikTok',
+                features: ['Followers réels', 'Livraison rapide', 'Sécurisé'],
+                popular: false,
+                variants: [
+                    { label: '1K Followers', price: 6 },
+                    { label: '10K Followers', price: 25 },
+                    { label: '20K Followers', price: 35 }
+                ],
+                variantIds: [15,16,17]
+            },
+            {
+                id: 18,
+                name: 'Instagram Followers',
+                category: 'social',
+                price: 5,
+                imageUrl: 'https://i.ibb.co/27HQTsqP/Untitled-Project-22-1.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'Boost de followers Instagram',
+                features: ['Followers actifs', 'Profil optimisé', 'Livraison immédiate'],
+                popular: false,
+                variants: [
+                    { label: '1K Followers', price: 5 },
+                    { label: '5K Followers', price: 10 }
+                ],
+                variantIds: [18,19]
+            },
+            {
+                id: 20,
+                name: 'YouTube Lifetime',
+                category: 'streaming',
+                price: 3,
+                imageUrl: 'https://i.ibb.co/7xyDr0qZ/Untitled-Project-23.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'YouTube Premium sans publicité',
+                features: ['Sans publicité', 'YouTube Music', 'Téléchargements'],
+                popular: false
+            },
+            {
+                id: 21,
+                name: 'Twitch Followers',
+                category: 'social',
+                price: 4,
+                imageUrl: 'https://i.ibb.co/Pvs8dvW9/Untitled-Project-24.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'Boost de followers Twitch',
+                features: ['Followers réels', 'Support streaming'],
+                popular: false,
+                variants: [
+                    { label: '100 Followers', price: 4 },
+                    { label: '500 Followers', price: 10 },
+                    { label: '2000 Followers', price: 20 },
+                    { label: '5000 Followers', price: 30 },
+                    { label: '10000 Followers', price: 50 }
+                ],
+                variantIds: [21,22,23,24,25]
+            },
+            {
+                id: 26,
+                name: 'ChatGPT Accounts',
+                category: 'ai',
+                price: 5,
+                imageUrl: 'https://i.ibb.co/v4kGxK4B/Untitled-Project-25.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'Compte ChatGPT Plus',
+                features: ['GPT-4 accès', 'Priorité serveur', 'Fonctionnalités avancées'],
+                popular: true
+            },
+            {
+                id: 27,
+                name: 'Gemini Pro Accounts',
+                category: 'ai',
+                price: 5,
+                imageUrl: 'https://i.ibb.co/0yM3bQd2/Untitled-Project-26.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'Compte Google Gemini Pro',
+                features: ['Gemini Advanced', 'IA puissante', 'Intégration Google'],
+                popular: false
+            },
+            {
+                id: 28,
+                name: 'Movistar+ Lifetime',
+                category: 'streaming',
+                price: 5,
+                imageUrl: 'https://i.ibb.co/4npmBLqg/Untitled-Project-27.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'Movistar+ accès complet',
+                features: ['Chaînes premium', 'Sports & Films', 'Séries exclusives'],
+                popular: false
+            },
+            {
+                id: 29,
+                name: 'CapCut Pro Lifetime',
+                category: 'creative',
+                price: 4,
+                imageUrl: 'https://i.ibb.co/SXfLVn5Q/Untitled-Project-28.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'CapCut Pro pour montage vidéo',
+                features: ['Effets premium', 'Sans watermark', 'Outils avancés'],
+                popular: false
+            },
+            {
+                id: 30,
+                name: 'Filmora Lifetime',
+                category: 'creative',
+                price: 4,
+                imageUrl: 'https://i.ibb.co/Kcyj8KRb/Untitled-Project-29.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'Suite Wondershare complète',
+                features: ['Filmora & PDFelement', 'Outils créatifs', 'Licence permanente'],
+                popular: false
+            },
+            {
+                id: 31,
+                name: 'NordVPN Lifetime',
+                category: 'vpn',
+                price: 5,
+                imageUrl: 'https://i.ibb.co/B2kG1PtZ/Untitled-Project-30.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'NordVPN protection complète',
+                features: ['Serveurs mondiaux', 'Sécurité maximale', 'Streaming optimisé'],
+                popular: true
+            },
+            {
+                id: 32,
+                name: 'HotSpot Shield VPN 1 Year',
+                category: 'vpn',
+                price: 4,
+                imageUrl: 'https://i.ibb.co/7JCDHYBn/image-2026-05-06-170859921.png',
+                inStock: true,
+                stock: 150,
+                description: '🏷️ ⚡ Ultra Fast · 📱 Unlimited Devices · 🔒 Private & Secure',
+                features: ['7000+ serveurs', 'Sans logs'],
+                popular: false
+            },
+            {
+                id: 33,
+                name: 'TunnelBear',
+                category: 'vpn',
+                price: 4,
+                imageUrl: 'https://i.ibb.co/Q71Qb4fL/image-2026-05-06-170007716.png',
+                inStock: true,
+                stock: 150,
+                description: 'TunnelBear VPN simple et efficace',
+                features: ['Interface intuitive', 'Sécurité forte', 'Multi-plateformes'],
+                popular: false
+            },
+            {
+                id: 34,
+                name: 'IPVanish 1 Year',
+                category: 'vpn',
+                price: 4,
+                imageUrl: 'https://i.ibb.co/nsy5vsNv/Untitled-Project-34.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'IPVanish VPN haute performance',
+                features: ['Connexions illimitées', 'Vitesse maximale', '1 an d\'accès'],
+                popular: false
+            },
+            {
+                id: 35,
+                name: 'PureVPN',
+                category: 'vpn',
+                price: 4,
+                imageUrl: 'https://i.ibb.co/rRzV1tFH/image-2026-05-06-170103269.png',
+                inStock: true,
+                stock: 150,
+                description: 'PureVPN protection globale',
+                features: ['6500+ serveurs', '78 pays', 'Sécurité premium'],
+                popular: false
+            },
+            {
+                id: 36,
+                name: 'Mullvad Lifetime',
+                category: 'vpn',
+                price: 5,
+                imageUrl: 'https://i.ibb.co/FkHzgBxy/Untitled-Project-32.jpg',
+                inStock: true,
+                stock: 150,
+                description: 'Mullvad VPN ultra-sécurisé et non logs',
+                features: ['Anonymat total', 'Open source', 'Privacy-first'],
+                popular: true
+            }
+        ];
 
         const CATEGORIES = {
             all: { name: 'Tous les produits' },
@@ -473,15 +474,7 @@
             const [checkoutEmail, setCheckoutEmail] = useState('');
             const [emailError, setEmailError] = useState('');
             const [orderConfirmed, setOrderConfirmed] = useState(false);
-            const [paidOrderId, setPaidOrderId] = useState('');
-            const [paypalError, setPaypalError] = useState('');
-            const [isProcessing, setIsProcessing] = useState(false);
             const [isScrolled, setIsScrolled] = useState(false);
-            const paypalButtonRef = useRef(null);
-            const checkoutEmailRef = useRef('');
-            const [paypalClientId, setPaypalClientId] = useState(null);
-            const [paypalLoaded, setPaypalLoaded] = useState(false);
-            const isPaypalConfigured = paypalLoaded;
 
             // Détection du scroll pour la navbar
             useEffect(() => {
@@ -493,25 +486,8 @@
             }, []);
 
             useEffect(() => {
-                checkoutEmailRef.current = checkoutEmail;
-            }, [checkoutEmail]);
-
-            useEffect(() => {
                 setSelectedVariant(0);
             }, [selectedProduct]);
-
-            useEffect(() => {
-                fetch('/api/paypal-client-id')
-                    .then(res => res.json())
-                    .then(data => {
-                        setPaypalClientId(data.clientId);
-                        const script = document.createElement('script');
-                        script.src = `https://www.paypal.com/sdk/js?client-id=${data.clientId}&currency=EUR`;
-                        script.onload = () => setPaypalLoaded(true);
-                        document.head.appendChild(script);
-                    })
-                    .catch(err => console.error('Failed to load PayPal client ID', err));
-            }, []);
 
             // ============================================================================
             // ANALYTICS
@@ -583,104 +559,43 @@
             };
 
             // ============================================================================
-            // PAIEMENT PAYPAL
+            // PAIEMENT PAYPAL.ME
             // ============================================================================
-            useEffect(() => {
-                if (currentPage !== 'checkout' || cart.length === 0) return;
+            const getPayPalMeUrl = () => {
+                const link = SITE_CONFIG.paypalMeLink.trim();
+                if (!link || link.includes('TON_PSEUDO')) return '';
 
-                const scriptId = 'paypal-sdk';
+                const amount = getTotalPrice().toFixed(2);
+                return `${link.replace(/\/$/, '')}/${amount}`;
+            };
 
-                const renderPayPalButton = (clientId) => {
-                    if (!window.paypal || !paypalButtonRef.current) return;
+            const handlePayPalMeCheckout = (requireEmail = false) => {
+                if (requireEmail && (!checkoutEmail || !validateEmail(checkoutEmail))) {
+                    setEmailError('Adresse email invalide');
+                    alert('Veuillez entrer une adresse email valide avant de payer.');
+                    return;
+                }
 
-                    paypalButtonRef.current.innerHTML = '';
-                    setPaypalError('');
+                const paypalUrl = getPayPalMeUrl();
+                if (!paypalUrl) {
+                    alert('Ajoute ton lien PayPal.Me dans paypalMeLink avant de lancer les paiements.');
+                    return;
+                }
 
-                    window.paypal.Buttons({
-                        style: {
-                            layout: 'vertical',
-                            color: 'gold',
-                            shape: 'rect',
-                            label: 'paypal'
-                        },
-                        // ✅ SÉCURISÉ : la commande est créée côté serveur (prix validés serveur)
-                        createOrder: async () => {
-                            const cartItems = cart.map(item => ({ id: item.id, quantity: item.quantity }));
-                            const resp = await fetch('/api/create-order', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ items: cartItems, email: checkoutEmailRef.current })
-                            });
-                            if (!resp.ok) {
-                                const err = await resp.json().catch(() => ({}));
-                                throw new Error(err.error || 'Erreur création commande');
-                            }
-                            const { orderID } = await resp.json();
-                            return orderID;
-                        },
-                        // ✅ SÉCURISÉ : la capture est faite côté serveur
-                        onApprove: async (data) => {
-                            try {
-                                const resp = await fetch('/api/capture-order', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ orderID: data.orderID })
-                                });
-                                if (!resp.ok) throw new Error('Capture échouée');
-                                const result = await resp.json();
-                                if (result.status === 'COMPLETED') {
-                                    setPaidOrderId(data.orderID);
-                                    setOrderConfirmed(true);
-                                    setCurrentPage('confirmation');
-                                    trackEvent('purchase', {
-                                        transaction_id: data.orderID,
-                                        value: getTotalPrice(),
-                                        currency: 'EUR',
-                                        items: cart.map(item => ({
-                                            item_id: item.id,
-                                            item_name: item.name,
-                                            quantity: item.quantity,
-                                            price: item.price
-                                        }))
-                                    });
-                                    setCart([]);
-                                    return;
-                                }
-                                setPaypalError('Le paiement n\'est pas encore confirmé. Contactez le support.');
-                            } catch (error) {
-                                setPaypalError('Erreur lors de la confirmation du paiement. Veuillez réessayer.');
-                            }
-                        },
-                        onError: () => {
-                            setPaypalError('Une erreur PayPal est survenue. Veuillez réessayer.');
-                        }
-                    }).render(paypalButtonRef.current);
-                };
-
-                // Récupère le client_id depuis le serveur (jamais exposé dans le HTML)
-                const loadPayPal = async () => {
-                    try {
-                        const resp = await fetch('/api/paypal-client-id');
-                        const { clientId } = await resp.json();
-                        if (!clientId) { setPaypalError('Configuration PayPal manquante.'); return; }
-
-                        const existingScript = document.getElementById(scriptId);
-                        if (existingScript && window.paypal) { renderPayPalButton(clientId); return; }
-                        if (existingScript) existingScript.remove();
-
-                        const script = document.createElement('script');
-                        script.id = scriptId;
-                        script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(clientId)}&currency=EUR&intent=capture`;
-                        script.onload = () => renderPayPalButton(clientId);
-                        script.onerror = () => setPaypalError('Impossible de charger PayPal.');
-                        document.body.appendChild(script);
-                    } catch (e) {
-                        setPaypalError('Erreur de connexion au serveur.');
-                    }
-                };
-
-                loadPayPal();
-            }, [currentPage, cart]);
+                window.open(paypalUrl, '_blank', 'noopener,noreferrer');
+                setOrderConfirmed(true);
+                setCurrentPage('confirmation');
+                trackEvent('paypalme_redirect', {
+                    value: getTotalPrice(),
+                    currency: 'EUR',
+                    items: cart.map(item => ({
+                        item_id: item.id,
+                        item_name: item.name,
+                        quantity: item.quantity,
+                        price: item.price
+                    }))
+                });
+            };
 
             // Filtrer les produits par catégorie
             const filteredProducts = selectedCategory === 'all'
@@ -1132,11 +1047,10 @@
                                 </div>
                                 <button
                                     className="btn-primary btn-large btn-checkout"
-                                    disabled={isProcessing}
-                                    onClick={() => setCurrentPage('checkout')}
+                                    onClick={() => handlePayPalMeCheckout(false)}
                                 >
                                     <CreditCard size={20} />
-                                    {isProcessing ? 'Traitement...' : 'Payer avec PayPal'}
+                                    Payer par PayPal
                                 </button>
                                 <div className="secure-badge">
                                     <Lock size={16} />
@@ -1150,8 +1064,6 @@
 
             // PAGE CHECKOUT
             const CheckoutPage = () => {
-                if (!paypalLoaded) return <div className="loading">Chargement de PayPal...</div>;
-
                 return (
                     <div className="page-content">
                         <div className="page-header">
@@ -1187,24 +1099,17 @@
                                     </div>
                                     <div>
                                         <h3>PayPal</h3>
-                                        <p>Une fois le paiement confirmé par PayPal, le site affichera les instructions Discord pour récupérer votre produit.</p>
+                                        <p>Cliquez sur le bouton pour ouvrir PayPal.Me et payer le montant de votre commande.</p>
                                     </div>
                                 </div>
-                                {isPaypalConfigured ? (
-                                    <>
-                                        <div className="paypal-button-mount" ref={paypalButtonRef}></div>
-                                        {paypalError && <p className="payment-error"><strong>Erreur paiement :</strong> {paypalError}</p>}
-                                        <p className="payment-info">
-                                            <Shield size={14} />
-                                            Paiement sécurisé par PayPal.
-                                        </p>
-                                    </>
-                                ) : (
-                                    <div className="paypal-config-warning">
-                                        <strong>PayPal doit être configuré.</strong>
-                                        <span>Remplacez <code>REMPLACE_PAR_TON_CLIENT_ID_PAYPAL</code> par votre PayPal Client ID dans la configuration du site.</span>
-                                    </div>
-                                )}
+                                <button className="paypalme-btn" onClick={() => handlePayPalMeCheckout(true)}>
+                                    <CreditCard size={20} />
+                                    Payer par PayPal
+                                </button>
+                                <p className="payment-info">
+                                    <Shield size={14} />
+                                    Après le paiement, rejoignez le Discord et ouvrez un ticket.
+                                </p>
                             </div>
                         </div>
 
@@ -1225,7 +1130,7 @@
                             </div>
                             <div className="delivery-info">
                                 <Lock size={16} />
-                                <span>Confirmation PayPal obligatoire</span>
+                                <span>Paiement à finaliser sur PayPal.Me</span>
                             </div>
                         </div>
                     </div>
@@ -1242,10 +1147,10 @@
                                 <Check size={48} />
                             </div>
                         </div>
-                        <h1 className="confirmation-title">Commande passée</h1>
+                        <h1 className="confirmation-title">Paiement ouvert sur PayPal</h1>
                         <p className="confirmation-message">
-                            Paiement confirmé. {SITE_CONFIG.discordMessage} Utilisez l'adresse <strong>{checkoutEmail}</strong> si le support vous demande une confirmation.
-                            {paidOrderId && <span className="order-reference">Référence PayPal : {paidOrderId}</span>}
+                            Finalisez le paiement sur PayPal.Me, puis {SITE_CONFIG.discordMessage}
+                            {checkoutEmail && <> Utilisez l'adresse <strong>{checkoutEmail}</strong> si le support vous demande une confirmation.</>}
                         </p>
 
                         <div className="confirmation-details">
@@ -3075,33 +2980,46 @@
                             box-shadow: 0 14px 34px rgba(220, 38, 38, 0.28);
                         }
 
-                        .paypal-button-mount {
-                            min-height: 52px;
+                        .paypalme-btn {
+                            width: 100%;
                             max-width: 420px;
-                        }
-
-                        .paypal-config-warning,
-                        .payment-error {
-                            display: flex;
-                            flex-direction: column;
-                            gap: 0.45rem;
-                            padding: 1rem;
-                            border-radius: 8px;
-                            background: rgba(220, 38, 38, 0.1);
-                            border: 1px solid rgba(248, 113, 113, 0.28);
-                            color: #fecaca;
-                            line-height: 1.5;
-                        }
-
-                        .paypal-config-warning code {
+                            min-height: 52px;
+                            border: none;
+                            border-radius: 10px;
+                            background:
+                                linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent 42%),
+                                linear-gradient(135deg, #ef4444 0%, #b91c1c 58%, #7f1d1d 100%);
                             color: #fff;
-                            background: rgba(255, 255, 255, 0.1);
-                            padding: 0.1rem 0.28rem;
-                            border-radius: 4px;
+                            font-size: 1rem;
+                            font-weight: 800;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 0.55rem;
+                            box-shadow: 0 18px 42px rgba(220, 38, 38, 0.28);
+                            transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
+                            position: relative;
+                            overflow: hidden;
                         }
 
-                        .payment-error {
-                            margin-top: 1rem;
+                        .paypalme-btn::before {
+                            content: '';
+                            position: absolute;
+                            inset: 0;
+                            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+                            transform: translateX(-120%) skewX(-18deg);
+                            transition: transform 0.7s ease;
+                        }
+
+                        .paypalme-btn:hover {
+                            transform: translateY(-3px) scale(1.01);
+                            box-shadow: 0 24px 58px rgba(220, 38, 38, 0.36);
+                            filter: saturate(1.08);
+                        }
+
+                        .paypalme-btn:hover::before {
+                            transform: translateX(120%) skewX(-18deg);
                         }
 
                         .payment-info {
@@ -3517,16 +3435,6 @@
                             color: #ef4444;
                             font-size: 12px;
                             margin-top: 4px;
-                        }
-
-                        .payment-error {
-                            background-color: #fee2e2;
-                            border: 1px solid #fca5a5;
-                            color: #991b1b;
-                            padding: 12px;
-                            border-radius: 8px;
-                            margin: 10px 0;
-                            font-size: 14px;
                         }
 
                         .payment-warning {
