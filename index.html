@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -501,7 +501,7 @@
             }, [selectedProduct]);
 
             useEffect(() => {
-                fetch('/.netlify/functions/paypal-client-id')
+                fetch('/api/paypal-client-id')
                     .then(res => res.json())
                     .then(data => {
                         setPaypalClientId(data.clientId);
@@ -614,7 +614,7 @@
                         // ✅ SÉCURISÉ : la commande est créée côté serveur (prix validés serveur)
                         createOrder: async () => {
                             const cartItems = cart.map(item => ({ id: item.id, quantity: item.quantity }));
-                            const resp = await fetch('/.netlify/functions/create-order', {
+                            const resp = await fetch('/api/create-order', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ items: cartItems, email: checkoutEmailRef.current })
@@ -629,7 +629,7 @@
                         // ✅ SÉCURISÉ : la capture est faite côté serveur
                         onApprove: async (data) => {
                             try {
-                                const resp = await fetch('/.netlify/functions/capture-order', {
+                                const resp = await fetch('/api/capture-order', {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json' },
                                     body: JSON.stringify({ orderID: data.orderID })
@@ -668,7 +668,7 @@
                 // Récupère le client_id depuis le serveur (jamais exposé dans le HTML)
                 const loadPayPal = async () => {
                     try {
-                        const resp = await fetch('/.netlify/functions/paypal-client-id');
+                        const resp = await fetch('/api/paypal-client-id');
                         const { clientId } = await resp.json();
                         if (!clientId) { setPaypalError('Configuration PayPal manquante.'); return; }
 
