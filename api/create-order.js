@@ -18,7 +18,7 @@ const PRODUCTS = [
   { id: 9,  name: 'OnePlay Lifetime',          price: 2    },
   { id: 10, name: 'Spotify Lifetime',          price: 6    },
   { id: 11, name: 'Spotify Key Lifetime',      price: 6    },
-  { id: 12, name: 'Crunchyroll MEGA FAN',      price: 5    },
+  { id: 12, name: 'Crunchyroll MEGA FAN Lifetime',      price: 5    },
   { id: 13, name: 'Duolingo Lifetime',         price: 4    },
   { id: 14, name: 'NBA Lifetime',              price: 4    },
   { id: 15, name: 'TikTok 1K Followers',       price: 6    },
