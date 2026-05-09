@@ -480,6 +480,8 @@ const SITE_CONFIG = {
             const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
             const [checkoutEmail, setCheckoutEmail] = useState('');
             const [emailError, setEmailError] = useState('');
+            const [checkoutDiscordId, setCheckoutDiscordId] = useState('');
+            const [discordIdError, setDiscordIdError] = useState('');
             const [orderConfirmed, setOrderConfirmed] = useState(false);
             const [orderId, setOrderId] = useState('');
             const [orderIdError, setOrderIdError] = useState('');
@@ -580,6 +582,18 @@ const SITE_CONFIG = {
                 }
             };
 
+            const validateDiscordId = (value) => /^\d{17,20}$/.test(String(value || '').trim());
+
+            const handleCheckoutDiscordId = (value) => {
+                const normalized = String(value || '').trim();
+                setCheckoutDiscordId(normalized);
+                if (!normalized) {
+                    setDiscordIdError('');
+                    return;
+                }
+                setDiscordIdError(validateDiscordId(normalized) ? '' : 'ID Discord invalide (17 à 20 chiffres)');
+            };
+
             // ============================================================================
             // GÉNÉRATION ID DE COMMANDE
             // ============================================================================
@@ -592,7 +606,7 @@ const SITE_CONFIG = {
                 return id;
             };
 
-            const registerOrderWithBot = async (newOrderId, product, total, email) => {
+            const registerOrderWithBot = async (newOrderId, product, total, email, discordId) => {
                 try {
                     const apiBaseUrl = String(SITE_CONFIG.botApiUrl || '').trim().replace(/\/$/, '');
                     const endpoint = apiBaseUrl ? `${apiBaseUrl}/api/register-order` : '/api/register-order';
@@ -603,7 +617,7 @@ const SITE_CONFIG = {
                             'Content-Type': 'application/json',
                             'X-API-Secret': SITE_CONFIG.botApiSecret,
                         },
-                        body: JSON.stringify({ orderId: newOrderId, product, total, email }),
+                        body: JSON.stringify({ orderId: newOrderId, product, total, email, discordId }),
                     });
 
                     let json = {};
@@ -660,7 +674,13 @@ const SITE_CONFIG = {
 
                 for (let attempt = 0; attempt < 5; attempt++) {
                     const candidateId = generateOrderId();
-                    const result = await registerOrderWithBot(candidateId, productSummary, parseFloat(total), checkoutEmail);
+                    const result = await registerOrderWithBot(
+                        candidateId,
+                        productSummary,
+                        parseFloat(total),
+                        checkoutEmail,
+                        checkoutDiscordId
+                    );
                     if (result.ok) {
                         newOrderId = candidateId;
                         registrationResult = result;
@@ -1203,6 +1223,18 @@ const SITE_CONFIG = {
                                         className={`input-field ${emailError ? 'input-error' : ''}`}
                                     />
                                     {emailError && <p className="error-message">{emailError}</p>}
+                                </div>
+                                <div className="form-group">
+                                    <label>ID Discord (optionnel)</label>
+                                    <input
+                                        type="text"
+                                        inputMode="numeric"
+                                        placeholder="Ex: 123456789012345678"
+                                        value={checkoutDiscordId}
+                                        onChange={(e) => handleCheckoutDiscordId(e.target.value)}
+                                        className={`input-field ${discordIdError ? 'input-error' : ''}`}
+                                    />
+                                    {discordIdError && <p className="error-message">{discordIdError}</p>}
                                 </div>
                             </div>
 
