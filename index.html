@@ -485,6 +485,7 @@ const SITE_CONFIG = {
             const [orderConfirmed, setOrderConfirmed] = useState(false);
             const [orderId, setOrderId] = useState('');
             const [orderIdError, setOrderIdError] = useState('');
+            const [isCategoryTransitioning, setIsCategoryTransitioning] = useState(false);
             const [toast, setToast] = useState(null); // { message, type }
 
             const showToast = (message, type = 'success') => {
@@ -492,6 +493,13 @@ const SITE_CONFIG = {
                 setTimeout(() => setToast(null), 2800);
             };
             const [isScrolled, setIsScrolled] = useState(false);
+
+            const handleCategoryChange = (key) => {
+                if (key === selectedCategory) return;
+                setIsCategoryTransitioning(true);
+                setSelectedCategory(key);
+                setTimeout(() => setIsCategoryTransitioning(false), 320);
+            };
 
             // Détection du scroll pour la navbar
             useEffect(() => {
@@ -968,7 +976,7 @@ const SITE_CONFIG = {
                             <button
                                 key={key}
                                 className={`category-btn ${selectedCategory === key ? 'active' : ''}`}
-                                onClick={() => setSelectedCategory(key)}
+                                onClick={() => handleCategoryChange(key)}
                             >
                                 {cat.name}
                             </button>
@@ -976,7 +984,7 @@ const SITE_CONFIG = {
                     </div>
 
                     {/* Grille de produits */}
-                    <div className="product-grid">
+                    <div className={`product-grid ${isCategoryTransitioning ? 'transitioning' : ''}`}>
                         {filteredProducts.map(product => (
                             <ProductCard key={product.id} product={product} />
                         ))}
@@ -1035,10 +1043,12 @@ const SITE_CONFIG = {
                 if (!selectedProduct) return null;
 
                 return (
-                    <div className="page-content">
-                        <button className="back-btn" onClick={() => setCurrentPage('products')}>
-                            ← Retour au catalogue
-                        </button>
+                    <div className="page-content product-detail-page">
+                        <div className="back-btn-wrap">
+                            <button className="back-btn" onClick={() => setCurrentPage('products')}>
+                                ← Retour au catalogue
+                            </button>
+                        </div>
 
                         <div className="product-detail">
                             <div className="product-detail-image">
@@ -1113,6 +1123,31 @@ const SITE_CONFIG = {
                                 </div>
                             </div>
                         </div>
+
+                        <section className="product-extra-info">
+                            <div className="product-extra-card">
+                                <h3>Description détaillée</h3>
+                                <p>
+                                    {selectedProduct.description}. Produit digital livré via Discord avec accompagnement
+                                    de l'équipe support si nécessaire. Nous recommandons de conserver votre ID de
+                                    commande pour le suivi et la validation du rôle client.
+                                </p>
+                            </div>
+                            <div className="product-extra-card">
+                                <h3>Livraison & Activation</h3>
+                                <p>
+                                    Livraison rapide après confirmation et traitement de votre commande. L'activation
+                                    se fait en ticket privé pour garantir une prise en charge propre et sécurisée.
+                                </p>
+                            </div>
+                            <div className="product-extra-card">
+                                <h3>Support Premium</h3>
+                                <p>
+                                    Support disponible 24/7 sur Discord. En cas de besoin, notre équipe vous aide pour
+                                    l'installation, l'accès et la résolution de problèmes.
+                                </p>
+                            </div>
+                        </section>
                     </div>
                 );
             };
@@ -1392,6 +1427,14 @@ const SITE_CONFIG = {
             // ============================================================================
             return (
                 <div className="app">
+                    <div className="ambient-layer" aria-hidden="true">
+                        <span className="ambient-blob ambient-blob-1"></span>
+                        <span className="ambient-blob ambient-blob-2"></span>
+                        <span className="ambient-blob ambient-blob-3"></span>
+                        <span className="ambient-line ambient-line-1"></span>
+                        <span className="ambient-line ambient-line-2"></span>
+                    </div>
+
                     {/* Navigation */}
                     <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
                         <div className="nav-container">
@@ -1571,6 +1614,66 @@ const SITE_CONFIG = {
                         .app {
                             min-height: 100vh;
                             position: relative;
+                        }
+
+                        .ambient-layer {
+                            position: fixed;
+                            inset: 0;
+                            z-index: 0;
+                            pointer-events: none;
+                            overflow: hidden;
+                        }
+                        .ambient-blob {
+                            position: absolute;
+                            border-radius: 999px;
+                            filter: blur(72px);
+                            opacity: 0.22;
+                            mix-blend-mode: screen;
+                            animation: blobDrift 18s ease-in-out infinite;
+                        }
+                        .ambient-blob-1 {
+                            width: 440px;
+                            height: 440px;
+                            top: 8%;
+                            left: -8%;
+                            background: radial-gradient(circle, rgba(239,68,68,0.62) 0%, transparent 68%);
+                        }
+                        .ambient-blob-2 {
+                            width: 520px;
+                            height: 520px;
+                            top: 44%;
+                            right: -12%;
+                            background: radial-gradient(circle, rgba(185,28,28,0.58) 0%, transparent 70%);
+                            animation-delay: -6s;
+                        }
+                        .ambient-blob-3 {
+                            width: 360px;
+                            height: 360px;
+                            bottom: -8%;
+                            left: 28%;
+                            background: radial-gradient(circle, rgba(147,20,20,0.52) 0%, transparent 68%);
+                            animation-delay: -11s;
+                        }
+                        .ambient-line {
+                            position: absolute;
+                            width: 140%;
+                            height: 1px;
+                            left: -20%;
+                            background: linear-gradient(90deg, transparent, rgba(239,68,68,0.22), transparent);
+                            opacity: 0.35;
+                            transform: rotate(-12deg);
+                            animation: lineSweep 14s linear infinite;
+                        }
+                        .ambient-line-1 { top: 24%; }
+                        .ambient-line-2 { top: 62%; animation-delay: -7s; }
+                        @keyframes blobDrift {
+                            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+                            50% { transform: translate3d(18px, -22px, 0) scale(1.08); }
+                        }
+                        @keyframes lineSweep {
+                            0% { transform: translateX(-15%) rotate(-12deg); opacity: 0.16; }
+                            50% { transform: translateX(10%) rotate(-12deg); opacity: 0.35; }
+                            100% { transform: translateX(25%) rotate(-12deg); opacity: 0.16; }
                         }
 
                         /* Animated noise grain overlay */
@@ -2460,6 +2563,12 @@ const SITE_CONFIG = {
                             flex-wrap: wrap;
                             gap: 0.5rem;
                             margin-bottom: 2.5rem;
+                            padding: 0.55rem;
+                            border: 1px solid rgba(255,255,255,0.08);
+                            background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+                            border-radius: 16px;
+                            backdrop-filter: blur(10px);
+                            -webkit-backdrop-filter: blur(10px);
                         }
                         .category-btn {
                             background: rgba(255,255,255,0.05);
@@ -2472,17 +2581,35 @@ const SITE_CONFIG = {
                             cursor: pointer;
                             transition: all 0.25s ease;
                             letter-spacing: -0.01em;
+                            position: relative;
+                            overflow: hidden;
                         }
                         .category-btn:hover {
                             background: rgba(220,38,38,0.1);
                             border-color: rgba(220,38,38,0.25);
                             color: var(--text);
+                            transform: translateY(-1px);
                         }
                         .category-btn.active {
                             background: linear-gradient(135deg, rgba(239,68,68,0.22) 0%, rgba(127,29,29,0.14) 100%);
                             border-color: rgba(220,38,38,0.45);
                             color: #fca5a5;
                             box-shadow: 0 0 20px rgba(220,38,38,0.12);
+                        }
+                        .category-btn.active::after {
+                            content: '';
+                            position: absolute;
+                            left: 10%;
+                            right: 10%;
+                            bottom: 3px;
+                            height: 2px;
+                            border-radius: 999px;
+                            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+                            animation: categoryPulse 1.6s ease-in-out infinite;
+                        }
+                        @keyframes categoryPulse {
+                            0%, 100% { opacity: 0.35; transform: scaleX(0.88); }
+                            50% { opacity: 1; transform: scaleX(1); }
                         }
 
                         /* ====================================================
@@ -2493,6 +2620,15 @@ const SITE_CONFIG = {
                             grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
                             gap: 1.35rem;
                             margin-top: 1.5rem;
+                        }
+                        .product-grid.transitioning .product-card {
+                            animation: categoryGridIn 0.34s cubic-bezier(0.16,1,0.3,1) both;
+                        }
+                        .product-grid.transitioning .product-card:nth-child(2n) { animation-delay: 0.03s; }
+                        .product-grid.transitioning .product-card:nth-child(3n) { animation-delay: 0.05s; }
+                        @keyframes categoryGridIn {
+                            0% { opacity: 0; transform: translateY(14px) scale(0.985); }
+                            100% { opacity: 1; transform: translateY(0) scale(1); }
                         }
 
                         .product-card {
@@ -2592,7 +2728,7 @@ const SITE_CONFIG = {
                         .product-image img {
                             width: 100%; height: 100%;
                             object-fit: cover;
-                            object-position: center 30%;
+                            object-position: center center;
                             display: block;
                             transform: scale(1.06);
                             transition: transform 0.5s ease;
@@ -2711,29 +2847,49 @@ const SITE_CONFIG = {
                            PRODUCT DETAIL
                         ==================================================== */
                         .back-btn {
-                            background: rgba(255,255,255,0.08);
-                            border: 1px solid rgba(255,255,255,0.18);
+                            background:
+                                linear-gradient(135deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.05) 100%),
+                                rgba(9,7,14,0.72);
+                            border: 1px solid rgba(255,255,255,0.2);
                             color: var(--text);
-                            padding: 0.65rem 1.3rem;
-                            border-radius: 10px;
+                            padding: 0.62rem 1.05rem;
+                            border-radius: 12px;
                             cursor: pointer;
-                            font-size: 0.92rem;
-                            font-weight: 600;
+                            font-size: 0.86rem;
+                            font-weight: 700;
                             display: inline-flex;
                             align-items: center;
                             gap: 0.5rem;
-                            margin-bottom: 2.5rem;
+                            margin-bottom: 0;
                             transition: all 0.22s ease;
-                            letter-spacing: -0.01em;
+                            letter-spacing: 0.01em;
+                            text-transform: uppercase;
+                            backdrop-filter: blur(10px);
+                            -webkit-backdrop-filter: blur(10px);
+                            box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05) inset;
+                        }
+                        .page-content-with-back .back-btn {
                             position: sticky;
                             top: 96px;
                             z-index: 20;
                         }
                         .back-btn:hover {
-                            background: rgba(255,255,255,0.14);
-                            border-color: rgba(255,255,255,0.3);
+                            background:
+                                linear-gradient(135deg, rgba(239,68,68,0.18) 0%, rgba(127,29,29,0.12) 100%),
+                                rgba(12,8,16,0.82);
+                            border-color: rgba(239,68,68,0.36);
                             color: #fff;
-                            transform: translateX(-3px);
+                            transform: translateX(-3px) translateY(-1px);
+                            box-shadow: 0 12px 28px rgba(0,0,0,0.36), 0 0 26px rgba(220,38,38,0.18);
+                        }
+                        .product-detail-page {
+                            padding-top: 8.8rem;
+                            padding-bottom: 4.2rem;
+                        }
+                        .back-btn-wrap {
+                            display: flex;
+                            justify-content: flex-start;
+                            margin-bottom: 2.1rem;
                         }
 
                         .product-detail {
@@ -2741,6 +2897,7 @@ const SITE_CONFIG = {
                             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
                             gap: 3rem;
                             align-items: start;
+                            margin-bottom: 2.6rem;
                         }
                         .product-detail-image { position: relative; }
                         .popular-badge-large {
@@ -2832,6 +2989,26 @@ const SITE_CONFIG = {
                             margin-top: 2rem;
                             padding-top: 2rem;
                             border-top: 1px solid rgba(255,255,255,0.07);
+                        }
+                        .product-extra-info {
+                            display: grid;
+                            grid-template-columns: repeat(3, minmax(0, 1fr));
+                            gap: 1rem;
+                        }
+                        .product-extra-card {
+                            background: var(--grad-surface);
+                            border: 1px solid var(--line);
+                            border-radius: var(--r-md);
+                            padding: 1.25rem 1.2rem;
+                        }
+                        .product-extra-card h3 {
+                            font-size: 1rem;
+                            margin-bottom: 0.7rem;
+                        }
+                        .product-extra-card p {
+                            color: var(--text-2);
+                            font-size: 0.93rem;
+                            line-height: 1.7;
                         }
                         .price-label {
                             font-size: 0.78rem;
@@ -3369,9 +3546,11 @@ const SITE_CONFIG = {
 
                             .page-content { padding: 2rem 1rem; }
                             .page-content-with-back { padding-top: 7rem; }
+                            .product-detail-page { padding-top: 7.4rem; }
                             .features { grid-template-columns: 1fr; }
                             .product-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
                             .product-detail { grid-template-columns: 1fr; gap: 2rem; }
+                            .product-extra-info { grid-template-columns: 1fr; }
                             .cart-content, .checkout-container { grid-template-columns: 1fr; gap: 1.5rem; }
                             .cart-summary, .checkout-summary { position: static; }
                             .cart-item { grid-template-columns: auto 1fr; }
