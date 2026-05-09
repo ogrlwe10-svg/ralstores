@@ -1119,7 +1119,7 @@ const SITE_CONFIG = {
 
             // PAGE PANIER
             const CartPage = () => (
-                <div className="page-content">
+                <div className="page-content page-content-with-back">
                     <button className="back-btn" onClick={() => setCurrentPage('products')}>
                         ← Retour au catalogue
                     </button>
@@ -1805,6 +1805,9 @@ const SITE_CONFIG = {
                             position: relative;
                             z-index: 1;
                             animation: pageFade 0.5s cubic-bezier(0.16,1,0.3,1) both;
+                        }
+                        .page-content-with-back {
+                            padding-top: 7.2rem;
                         }
 
                         @keyframes pageFade {
@@ -3362,6 +3365,7 @@ const SITE_CONFIG = {
                             .hero-cta { flex-direction: column; align-items: stretch; }
 
                             .page-content { padding: 2rem 1rem; }
+                            .page-content-with-back { padding-top: 5.6rem; }
                             .features { grid-template-columns: 1fr; }
                             .product-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
                             .product-detail { grid-template-columns: 1fr; gap: 2rem; }
