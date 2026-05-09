@@ -76,7 +76,9 @@ const SITE_CONFIG = {
     paypalMeLink: 'https://paypal.me/RALStore',  // ✅
     discordMessage: 'Veuillez rejoindre le Discord : https://discord.gg/Mm6QaTcAN et ouvrir un ticket avec le detail de votre commande afin de recevoir votre produit.',
     // ⚙️ API du bot Discord — mets l'adresse IP/URL de ton serveur ici
-    botApiUrl: 'https://ralstores.vercel.app',
+    // Laisser vide pour utiliser la route Vercel locale: /api/register-order
+    // (recommandé pour éviter les blocages HTTPS/CORS côté navigateur)
+    botApiUrl: '',
     botApiSecret: 'redxlea', // doit correspondre à API_SECRET dans le .env du bot
 };
 
@@ -586,7 +588,10 @@ const SITE_CONFIG = {
 
             const registerOrderWithBot = async (newOrderId, product, total, email) => {
                 try {
-                    const response = await fetch(`${SITE_CONFIG.botApiUrl}/api/register-order`, {
+                    const apiBaseUrl = String(SITE_CONFIG.botApiUrl || '').trim().replace(/\/$/, '');
+                    const endpoint = apiBaseUrl ? `${apiBaseUrl}/api/register-order` : '/api/register-order';
+
+                    const response = await fetch(endpoint, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -594,11 +599,26 @@ const SITE_CONFIG = {
                         },
                         body: JSON.stringify({ orderId: newOrderId, product, total, email }),
                     });
-                    const json = await response.json();
-                    return json.success === true;
+
+                    let json = {};
+                    try {
+                        json = await response.json();
+                    } catch (_) {
+                        json = {};
+                    }
+
+                    if (!response.ok) {
+                        return {
+                            ok: false,
+                            status: response.status,
+                            error: json.error || `Erreur API (${response.status})`,
+                        };
+                    }
+
+                    return { ok: json.success === true, status: response.status, error: json.error || null };
                 } catch (err) {
                     console.error('Erreur enregistrement commande:', err);
-                    return false;
+                    return { ok: false, error: 'Impossible de contacter le bot/API.' };
                 }
             };
 
@@ -626,12 +646,37 @@ const SITE_CONFIG = {
                     return;
                 }
 
-                // Générer et enregistrer l'ID de commande
-                const newOrderId = generateOrderId();
+                // Générer et enregistrer l'ID de commande (avec retry collision)
                 const productSummary = cart.map(item => `${item.name} x${item.quantity}`).join(', ');
                 const total = getTotalPrice().toFixed(2);
+                let newOrderId = '';
+                let registrationResult = { ok: false, error: 'Erreur inconnue' };
 
-                await registerOrderWithBot(newOrderId, productSummary, parseFloat(total), checkoutEmail);
+                for (let attempt = 0; attempt < 5; attempt++) {
+                    const candidateId = generateOrderId();
+                    const result = await registerOrderWithBot(candidateId, productSummary, parseFloat(total), checkoutEmail);
+                    if (result.ok) {
+                        newOrderId = candidateId;
+                        registrationResult = result;
+                        break;
+                    }
+                    // 409 = ID déjà existant, on retente avec un nouvel ID.
+                    if (result.status !== 409) {
+                        registrationResult = result;
+                        break;
+                    }
+                    registrationResult = result;
+                }
+
+                if (!newOrderId) {
+                    alert(
+                        "Impossible d'enregistrer ta commande dans le bot. " +
+                        "Aucun ID valide n'a été créé. Merci de réessayer dans quelques secondes.\n\n" +
+                        `Détail: ${registrationResult.error || 'Erreur inconnue'}`
+                    );
+                    return;
+                }
+
                 setOrderId(newOrderId);
 
                 // Ouvrir PayPal
