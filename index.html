@@ -74,7 +74,10 @@ const SITE_CONFIG = {
     name: 'RΔL',
     tagline: 'Boutique premium',
     paypalMeLink: 'https://paypal.me/RALStore',  // ✅
-    discordMessage: 'Veuillez rejoindre le Discord : https://discord.gg/Mm6QaTcAN et ouvrir un ticket avec le detail de votre commande afin de recevoir votre produit.'
+    discordMessage: 'Veuillez rejoindre le Discord : https://discord.gg/Mm6QaTcAN et ouvrir un ticket avec le detail de votre commande afin de recevoir votre produit.',
+    // ⚙️ API du bot Discord — mets l'adresse IP/URL de ton serveur ici
+    botApiUrl: 'http://TON_IP_SERVEUR:3747',
+    botApiSecret: 'change-this-secret-in-env', // doit correspondre à API_SECRET dans le .env du bot
 };
 
         // ============================================================================
@@ -476,6 +479,14 @@ const SITE_CONFIG = {
             const [checkoutEmail, setCheckoutEmail] = useState('');
             const [emailError, setEmailError] = useState('');
             const [orderConfirmed, setOrderConfirmed] = useState(false);
+            const [orderId, setOrderId] = useState('');
+            const [orderIdError, setOrderIdError] = useState('');
+            const [toast, setToast] = useState(null); // { message, type }
+
+            const showToast = (message, type = 'success') => {
+                setToast({ message, type });
+                setTimeout(() => setToast(null), 2800);
+            };
             const [isScrolled, setIsScrolled] = useState(false);
 
             // Détection du scroll pour la navbar
@@ -514,6 +525,7 @@ const SITE_CONFIG = {
                 } else {
                     setCart([...cart, { ...product, quantity: 1 }]);
                 }
+                showToast(`✅ ${product.name} ajouté au panier`);
                 trackEvent('add_to_cart', {
                     product_id: product.id,
                     product_name: product.name,
@@ -561,6 +573,36 @@ const SITE_CONFIG = {
             };
 
             // ============================================================================
+            // GÉNÉRATION ID DE COMMANDE
+            // ============================================================================
+            const generateOrderId = () => {
+                const chars = '0123456789ABCDEF';
+                let id = 'RAL-';
+                for (let i = 0; i < 8; i++) {
+                    id += chars[Math.floor(Math.random() * 16)];
+                }
+                return id;
+            };
+
+            const registerOrderWithBot = async (newOrderId, product, total, email) => {
+                try {
+                    const response = await fetch(`${SITE_CONFIG.botApiUrl}/api/register-order`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-API-Secret': SITE_CONFIG.botApiSecret,
+                        },
+                        body: JSON.stringify({ orderId: newOrderId, product, total, email }),
+                    });
+                    const json = await response.json();
+                    return json.success === true;
+                } catch (err) {
+                    console.error('Erreur enregistrement commande:', err);
+                    return false;
+                }
+            };
+
+            // ============================================================================
             // PAIEMENT PAYPAL.ME
             // ============================================================================
             const getPayPalMeUrl = () => {
@@ -571,7 +613,7 @@ const SITE_CONFIG = {
                 return `${link.replace(/\/$/, '')}/${amount}`;
             };
 
-            const handlePayPalMeCheckout = (requireEmail = false) => {
+            const handlePayPalMeCheckout = async (requireEmail = false) => {
                 if (requireEmail && (!checkoutEmail || !validateEmail(checkoutEmail))) {
                     setEmailError('Adresse email invalide');
                     alert('Veuillez entrer une adresse email valide avant de payer.');
@@ -584,6 +626,15 @@ const SITE_CONFIG = {
                     return;
                 }
 
+                // Générer et enregistrer l'ID de commande
+                const newOrderId = generateOrderId();
+                const productSummary = cart.map(item => `${item.name} x${item.quantity}`).join(', ');
+                const total = getTotalPrice().toFixed(2);
+
+                await registerOrderWithBot(newOrderId, productSummary, parseFloat(total), checkoutEmail);
+                setOrderId(newOrderId);
+
+                // Ouvrir PayPal
                 const a = document.createElement('a');
                 a.href = paypalUrl;
                 a.target = '_blank';
@@ -591,8 +642,10 @@ const SITE_CONFIG = {
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
+
                 setOrderConfirmed(true);
                 setCurrentPage('confirmation');
+
                 trackEvent('paypalme_redirect', {
                     value: getTotalPrice(),
                     currency: 'EUR',
@@ -996,6 +1049,9 @@ const SITE_CONFIG = {
             // PAGE PANIER
             const CartPage = () => (
                 <div className="page-content">
+                    <button className="back-btn" onClick={() => setCurrentPage('products')}>
+                        ← Retour au catalogue
+                    </button>
                     <div className="page-header">
                         <h1>Votre panier</h1>
                         <p>{getTotalItems()} article{getTotalItems() > 1 ? 's' : ''}</p>
@@ -1161,6 +1217,55 @@ const SITE_CONFIG = {
                             {checkoutEmail && <> Utilisez l'adresse <strong>{checkoutEmail}</strong> si le support vous demande une confirmation.</>}
                         </p>
 
+                        {/* ID DE COMMANDE — Affiché en évidence */}
+                        {orderId && (
+                            <div style={{
+                                margin: '2rem auto',
+                                maxWidth: '480px',
+                                background: 'rgba(225, 6, 0, 0.08)',
+                                border: '2px solid rgba(225, 6, 0, 0.5)',
+                                borderRadius: '16px',
+                                padding: '1.5rem 2rem',
+                                textAlign: 'center',
+                            }}>
+                                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', marginBottom: '0.4rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                                    🆔 Ton ID de commande
+                                </p>
+                                <div style={{
+                                    fontFamily: 'monospace',
+                                    fontSize: '1.9rem',
+                                    fontWeight: '800',
+                                    letterSpacing: '0.08em',
+                                    color: '#ff4444',
+                                    userSelect: 'all',
+                                    cursor: 'text',
+                                }}>
+                                    {orderId}
+                                </div>
+                                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem', marginTop: '0.75rem' }}>
+                                    📋 Sélectionne et copie cet ID — tu en auras besoin sur Discord<br/>
+                                    pour obtenir le rôle <strong>Client</strong> via le bouton <strong>"Claim Customer Role"</strong>.
+                                </p>
+                                <button
+                                    style={{
+                                        marginTop: '0.9rem',
+                                        background: 'rgba(225,6,0,0.2)',
+                                        border: '1px solid rgba(225,6,0,0.4)',
+                                        borderRadius: '8px',
+                                        color: '#fff',
+                                        padding: '0.4rem 1.2rem',
+                                        cursor: 'pointer',
+                                        fontSize: '0.82rem',
+                                    }}
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(orderId).then(() => alert(`ID ${orderId} copié !`));
+                                    }}
+                                >
+                                    📋 Copier l'ID
+                                </button>
+                            </div>
+                        )}
+
                         <div className="confirmation-details">
                             <div className="detail-card">
                                 <Users size={24} />
@@ -1169,13 +1274,13 @@ const SITE_CONFIG = {
                             </div>
                             <div className="detail-card">
                                 <Package size={24} />
-                                <h3>Ouvrir un ticket</h3>
-                                <p>Envoyez le detail de votre commande</p>
+                                <h3>Claim Customer Role</h3>
+                                <p>Entre ton ID de commande pour obtenir le rôle Client</p>
                             </div>
                             <div className="detail-card">
                                 <Shield size={24} />
-                                <h3>Recevoir le produit</h3>
-                                <p>Le support vous accompagne jusqu'a la livraison</p>
+                                <h3>Ouvrir un ticket</h3>
+                                <p>Le support te livre ton produit</p>
                             </div>
                         </div>
 
@@ -1183,6 +1288,7 @@ const SITE_CONFIG = {
                             <button className="btn-primary" onClick={() => {
                                 setCurrentPage('home');
                                 setOrderConfirmed(false);
+                                setOrderId('');
                             }}>
                                 Retour à l'accueil
                             </button>
@@ -1239,6 +1345,30 @@ const SITE_CONFIG = {
                         {currentPage === 'checkout' && CheckoutPage()}
                         {currentPage === 'confirmation' && ConfirmationPage()}
                     </main>
+
+                    {/* Toast notification */}
+                    {toast && (
+                        <div style={{
+                            position: 'fixed',
+                            bottom: '2rem',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            background: toast.type === 'success' ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)',
+                            backdropFilter: 'blur(20px)',
+                            border: `1px solid ${toast.type === 'success' ? 'rgba(34,197,94,0.4)' : 'rgba(239,68,68,0.4)'}`,
+                            color: '#fff',
+                            padding: '0.85rem 1.6rem',
+                            borderRadius: '14px',
+                            fontWeight: '600',
+                            fontSize: '0.95rem',
+                            zIndex: 9999,
+                            boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                            whiteSpace: 'nowrap',
+                            animation: 'toastIn 0.3s cubic-bezier(0.16,1,0.3,1)',
+                        }}>
+                            {toast.message}
+                        </div>
+                    )}
 
                     {/* Footer */}
                     <footer className="footer">
@@ -1927,6 +2057,11 @@ const SITE_CONFIG = {
                             50% { transform: rotate(45deg) translateY(6px); }
                         }
 
+                        @keyframes toastIn {
+                            from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+                            to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+                        }
+
                         /* ====================================================
                            BUTTONS
                         ==================================================== */
@@ -2486,23 +2621,26 @@ const SITE_CONFIG = {
                            PRODUCT DETAIL
                         ==================================================== */
                         .back-btn {
-                            background: rgba(255,255,255,0.05);
-                            border: 1px solid rgba(255,255,255,0.1);
-                            color: var(--muted);
-                            padding: 0.6rem 1.2rem;
+                            background: rgba(255,255,255,0.08);
+                            border: 1px solid rgba(255,255,255,0.18);
+                            color: var(--text);
+                            padding: 0.65rem 1.3rem;
                             border-radius: 10px;
                             cursor: pointer;
-                            font-size: 0.9rem;
+                            font-size: 0.92rem;
                             font-weight: 600;
                             display: inline-flex;
                             align-items: center;
-                            gap: 0.4rem;
+                            gap: 0.5rem;
                             margin-bottom: 2.5rem;
-                            transition: all 0.25s ease;
+                            transition: all 0.22s ease;
+                            letter-spacing: -0.01em;
                         }
                         .back-btn:hover {
-                            background: rgba(255,255,255,0.09);
-                            color: var(--text);
+                            background: rgba(255,255,255,0.14);
+                            border-color: rgba(255,255,255,0.3);
+                            color: #fff;
+                            transform: translateX(-3px);
                         }
 
                         .product-detail {
