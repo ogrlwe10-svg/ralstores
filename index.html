@@ -561,13 +561,19 @@ const SITE_CONFIG = {
             };
 
             const validateEmail = (email) => {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return emailRegex.test(email);
+                const normalized = String(email || '').trim().toLowerCase();
+                // Validation email stricte (format standard + TLD min 2 chars)
+                const emailRegex = /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$/i;
+                if (!emailRegex.test(normalized)) return false;
+                const domain = normalized.split('@')[1] || '';
+                const tld = domain.split('.').pop() || '';
+                return tld.length >= 2;
             };
 
             const handleCheckoutEmail = (value) => {
-                setCheckoutEmail(value);
-                if (value && !validateEmail(value)) {
+                const normalized = String(value || '').trim();
+                setCheckoutEmail(normalized);
+                if (normalized && !validateEmail(normalized)) {
                     setEmailError('Adresse email invalide');
                 } else {
                     setEmailError('');
@@ -633,8 +639,8 @@ const SITE_CONFIG = {
                 return `${link.replace(/\/$/, '')}/${amount}`;
             };
 
-            const handlePayPalMeCheckout = async (requireEmail = false) => {
-                if (requireEmail && (!checkoutEmail || !validateEmail(checkoutEmail))) {
+            const handlePayPalMeCheckout = async () => {
+                if (!checkoutEmail || !validateEmail(checkoutEmail)) {
                     setEmailError('Adresse email invalide');
                     alert('Veuillez entrer une adresse email valide avant de payer.');
                     return;
@@ -1156,10 +1162,10 @@ const SITE_CONFIG = {
                                 </div>
                                 <button
                                     className="btn-primary btn-large btn-checkout"
-                                    onClick={() => handlePayPalMeCheckout(false)}
+                                    onClick={() => setCurrentPage('checkout')}
                                 >
                                     <CreditCard size={20} />
-                                    Payer par PayPal
+                                    Continuer vers le paiement
                                 </button>
                                 <div className="secure-badge">
                                     <Lock size={16} />
@@ -1211,7 +1217,11 @@ const SITE_CONFIG = {
                                         <p>Cliquez sur le bouton pour ouvrir PayPal.Me et payer le montant de votre commande.</p>
                                     </div>
                                 </div>
-                                <button className="paypalme-btn" onClick={() => handlePayPalMeCheckout(true)}>
+                                <button
+                                    className="paypalme-btn"
+                                    onClick={handlePayPalMeCheckout}
+                                    disabled={!checkoutEmail || !validateEmail(checkoutEmail)}
+                                >
                                     <CreditCard size={20} />
                                     Payer par PayPal
                                 </button>
