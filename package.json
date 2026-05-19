@@ -1,9 +1,0 @@
-{
-  "name": "ral-store",
-  "version": "1.0.0",
-  "description": "RAL Store - Boutique de produits digitaux",
-  "private": true,
-  "engines": {
-    "node": "24.x"
-  }
-}
