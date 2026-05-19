@@ -1,0 +1,52 @@
+{
+  "buildCommand": "echo 'Static site - no build needed'",
+  "outputDirectory": ".",
+  "env": {
+    "OWNER_EMAILS": "@ral_owner_emails",
+    "ADMIN_EMAILS": "@ral_admin_emails",
+    "JWT_SECRET": "@ral_jwt_secret",
+    "OWNER_PIN_HASH": "@ral_owner_pin_hash",
+    "KATABUMP_API_URL": "@ral_katabump_api_url",
+    "KATABUMP_API_SECRET": "@ral_katabump_api_secret",
+    "ALLOWED_ORIGINS": "@ral_allowed_origins"
+  },
+  "redirects": [],
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "same-origin"
+        }
+      ]
+    },
+    {
+      "source": "/api/.*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, max-age=0"
+        }
+      ]
+    }
+  ]
+}
